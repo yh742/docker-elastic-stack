@@ -38,6 +38,11 @@ services:
       - elk
     depends_on:
       - elasticsearch
+    healthcheck:
+      test: ["CMD", "curl", "-f", "kibana:5601"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   metricbeat:
     # this needs to be root for you to monitor host docker socket
@@ -55,9 +60,10 @@ services:
         condition: on-failure
     networks:
       - elk
+    restart: on-failure
     depends_on:
       - logstash
-      - elasticsearch
+      - kibana
 
   filebeat:
     user: root
@@ -73,13 +79,13 @@ services:
       mode: global
       restart_policy:
         condition: on-failure
+    restart: on-failure
     depends_on: 
       - logstash
-      - elasticsearch
+      - kibana
     
 volumes:
   filebeat_data:
 
 networks:
   elk:
-    driver: bridge
