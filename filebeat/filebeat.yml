@@ -11,5 +11,11 @@ filebeat.autodiscover:
 processors:
 - add_cloud_metadata: ~
 
+setup.kibana:
+  host: "kibana:5601"
+  protocol: "http"
+
+setup.dashboards.enabled: true
+
 output.logstash:
   hosts: ["logstash:5044"]
